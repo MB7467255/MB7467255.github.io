@@ -25,8 +25,9 @@
   <button id="getLocation">Get Location</button>
   <button id="getAdd"> Get Address</button>  
   <p id="status"></p>
-  <p id="address"></p>
   <script>
+    let Lat = "";
+    let long = "";
     // Function to send location data to Google Analytics
     function sendLocationToGA(latitude, longitude) {
       gtag('event', 'user_location', {
@@ -36,34 +37,7 @@
       console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
     }
 
-    // Geolocation API to get user location  ใช้ navigator.geolocation.getCurrentPosition() เพื่อดึงตำแหน่ง Latitude และ Longitude
-    document.getElementById('getLocation').addEventListener('click', () => {
-      const status = document.getElementById('status');
-
-      if (navigator.geolocation) {
-        status.textContent = "Fetching location...";
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-              
-            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
-            sendLocationToGA(latitude, longitude); // Send data to GA
-
-              
-          },
-          (error) => {
-            status.textContent = `Error: ${error.message}`;
-          }
-        );
-      } else {
-        status.textContent = "Geolocation is not supported by your browser.";
-      }
-    });
-
-  </Script>
- 
-<Script>
-    function getAddress(latitude, longitude) {
+   function getAddress(latitude, longitude) {
       try {
         // Call Nominatim API
         const response = await fetch(
@@ -79,19 +53,42 @@
         console.error("Error:", error);
         return "Unable to fetch address.";
       }
-    }
+    }  
 
+    // Geolocation API to get user location  ใช้ navigator.geolocation.getCurrentPosition() เพื่อดึงตำแหน่ง Latitude และ Longitude
+    document.getElementById('getLocation').addEventListener('click', () => {
+      const status = document.getElementById('status');
+
+      if (navigator.geolocation) {
+        status.textContent = "Fetching location...";
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+              
+            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
+            sendLocationToGA(latitude, longitude); // Send data to GA
+            getAddress(latitude, longitude);  
+          },
+          (error) => {
+            status.textContent = `Error: ${error.message}`;
+          }
+        );
+      } else {
+        status.textContent = "Geolocation is not supported by your browser.";
+      }
+    });
+
+  </Script>
+ 
+<Script>
  document.getElementById('GetAdd').addEventListener('click', () => {
-      const status = document.getElementById('status'); Prevent the form from submitting
-     
-      const latitude1 = latitude;
-      const longitude1 = longitude;
+      const status = document.getElementById('status'); Prevent the form from submittin
 
       const resultElement = document.getElementById("result");
       resultElement.textContent = "Fetching address...";
       
       // Fetch the address
-      const address = await getAddress(latitude1, longitude1);
+      const address = await getAddress(lat,long);
       address.textContent = `Address: ${address}`;
     });
   </script>
