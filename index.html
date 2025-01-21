@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Get Location and Send to Google Analytics</title>
     <link rel="stylesheet" href="style.css">
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
     <script>
@@ -14,10 +15,48 @@
     
       gtag('config', 'G-7QSVBY26ZR');
     </script>
+    
+
 </head>
 <body>
     <h1>Welcome to My Websiteeeeee</h1>
     <p>This is a simple website hosted on GitHub Pages.</p>
     <script src="script.js"></script>
+
+     <h1>Track User Location</h1>
+  <button id="getLocation">Get Location</button>
+  <p id="status"></p>
+
+  <script>
+    // Function to send location data to Google Analytics
+    function sendLocationToGA(latitude, longitude) {
+      gtag('event', 'user_location', {
+        'latitude': latitude,
+        'longitude': longitude
+      });
+      console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
+    }
+
+    // Geolocation API to get user location
+    document.getElementById('getLocation').addEventListener('click', () => {
+      const status = document.getElementById('status');
+
+      if (navigator.geolocation) {
+        status.textContent = "Fetching location...";
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
+            sendLocationToGA(latitude, longitude); // Send data to GA
+          },
+          (error) => {
+            status.textContent = `Error: ${error.message}`;
+          }
+        );
+      } else {
+        status.textContent = "Geolocation is not supported by your browser.";
+      }
+    });
+  </script>
 </body>
 </html>
