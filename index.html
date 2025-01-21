@@ -56,6 +56,7 @@
     }  
 
     // Geolocation API to get user location  ใช้ navigator.geolocation.getCurrentPosition() เพื่อดึงตำแหน่ง Latitude และ Longitude
+    // Geolocation API to get user location
     document.getElementById('getLocation').addEventListener('click', () => {
       const status = document.getElementById('status');
 
@@ -64,10 +65,12 @@
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
+                  // Fetch the address
+            const address = await getAddress(latitude, longitude);
+            address.textContent = `Address: ${address}`;  
+            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude},Long: ${address}`;
             sendLocationToGA(latitude, longitude); // Send data to GA
-            lat = latitude;
-            Long=longitude;
-            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude};              
+              
           },
           (error) => {
             status.textContent = `Error: ${error.message}`;
