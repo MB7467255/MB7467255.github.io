@@ -82,7 +82,7 @@
     }
 
  document.getElementById('GetAdd').addEventListener('click', () => {
-      const status = document.getElementById('address'); Prevent the form from submitting
+      const status = document.getElementById('status'); Prevent the form from submitting
      
       const latitude1 = latitude;
       const longitude1 = longitude;
@@ -91,7 +91,7 @@
       resultElement.textContent = "Fetching address...";
       
       // Fetch the address
-      const address = await getAddress(latitude, longitude);
+      const address = await getAddress(latitude1, longitude1);
       address.textContent = `Address: ${address}`;
     });
   </script>
