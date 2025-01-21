@@ -1,83 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM POC for Location Tracking</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-7QSVBY26ZR');
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Location and Convert to Address</title>
 </head>
 <body>
-    <h1>Convert Latitude & Longitude to Address</h1>
-    <p>ทดสอบ แปลงที่อยู่</p>
-    <button id="getLocation">Get Location</button>
-    <p id="status"></p>
+  <h1>Get Current Location and Convert to Address</h1>
+  <button id="getLocation">Get Location</button>
+  <p id="status"></p>
+  <p id="address"></p>
 
-    <script>
-        let lat = ""; // ตัวแปรสำหรับเก็บ Latitude
-        let long = ""; // ตัวแปรสำหรับเก็บ Longitude
+  <script>
+    // Replace with your Google Maps API Key
+    const API_KEY = "eX9fgtVda9ruiVHPfEnUzeJXqYs=";
 
-        // Function to send location data to Google Analytics
-        function sendLocationToGA(latitude, longitude) {
-            gtag('event', 'user_location', {
-                'latitude': latitude,
-                'longitude': longitude
-            });
-            console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
+    // Function to get the current location
+    async function getLocation() {
+      const statusElement = document.getElementById("status");
+      const addressElement = document.getElementById("address");
+
+      // Check if Geolocation API is supported
+      if (!navigator.geolocation) {
+        statusElement.textContent = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      statusElement.textContent = "Fetching location...";
+
+      // Use Geolocation API to get the current position
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          statusElement.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
+          addressElement.textContent = "Fetching address...";
+
+          // Convert latitude and longitude to address
+          const address = await getAddress(latitude, longitude);
+          addressElement.textContent = `Address: ${address}`;
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              statusElement.textContent = "User denied the request for Geolocation.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              statusElement.textContent = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              statusElement.textContent = "The request to get user location timed out.";
+              break;
+            default:
+              statusElement.textContent = "An unknown error occurred.";
+              break;
+          }
         }
+      );
+    }
 
-        // Function to convert latitude and longitude to address
-        async function getAddress(latitude, longitude) {
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-                );
-                const data = await response.json();
-                if (data && data.display_name) {
-                    return data.display_name; // Return the formatted address
-                } else {
-                    return "Address not found.";
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                return "Unable to fetch address.";
-            }
+    // Function to convert latitude and longitude to an address using Google Maps Geocoding API
+    async function getAddress(latitude, longitude) {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`
+        );
+        const data = await response.json();
+        if (data.status === "OK" && data.results.length > 0) {
+          return data.results[0].formatted_address; // Return the formatted address
+        } else {
+          return "Address not found.";
         }
+      } catch (error) {
+        console.error("Error fetching address:", error);
+        return "Unable to fetch address.";
+      }
+    }
 
-        // Event listener for the "Get Location" button
-        document.getElementById('getLocation').addEventListener('click', async () => {
-            const status = document.getElementById('status');
-
-            if (navigator.geolocation) {
-                status.textContent = "Fetching location...";
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        lat = position.coords.latitude;
-                        long = position.coords.longitude;
-
-                        // Get address from coordinates
-                        const address = await getAddress(lat, long);
-                        status.textContent = `Location: Lat: ${lat}, Long: ${long}, Address: ${address}`;
-
-                        // Send data to Google Analytics
-                        sendLocationToGA(lat, long);
-                    },
-                    (error) => {
-                        status.textContent = `Error: ${error.message}`;
-                    }
-                );
-            } else {
-                status.textContent = "Geolocation is not supported by your browser.";
-            }
-        });
-    </script>
+    // Add event listener to the button
+    document.getElementById("getLocation").addEventListener("click", getLocation);
+  </script>
 </body>
 </html>
