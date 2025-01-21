@@ -60,10 +60,9 @@
       }
     });
 
-
+  </Script>
  
-
-
+<Script>
     function getAddress(latitude, longitude) {
       try {
         // Call Nominatim API
@@ -82,17 +81,18 @@
       }
     }
 
-    document.getElementById("getAddress").addEventListener("submit", async (event) => {
-      event.preventDefault(); // Prevent the form from submitting
-      const latitude = latitude;
-      const longitude = longitude;
+ document.getElementById('GetAddress').addEventListener('click', () => {
+      const status = document.getElementById('status'); Prevent the form from submitting
+     
+      const latitude1 = latitude;
+      const longitude1 = longitude;
 
       const resultElement = document.getElementById("result");
       resultElement.textContent = "Fetching address...";
       
       // Fetch the address
       const address = await getAddress(latitude, longitude);
-      resultElement.textContent = `Address: ${address}`;
+      status.textContent = `Address: ${address}`;
     });
   </script>
 
