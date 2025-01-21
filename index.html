@@ -6,7 +6,7 @@
     <title>Get Location and Send to Google Analytics</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) แทนที่ด้วย GA ID ของเรา--> 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,8 +19,7 @@
 
 </head>
 <body>
-    <h1>Welcome to My Websiteeeeee</h1>
-    <p>This is a simple website hosted on GitHub Pages.</p>
+    <h1>CRM POC for Location tracking </h1>
     <script src="script.js"></script>
 
      <h1>Track User Location</h1>
@@ -37,7 +36,7 @@
       console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
     }
 
-    // Geolocation API to get user location
+    // Geolocation API to get user location  ใช้ navigator.geolocation.getCurrentPosition() เพื่อดึงตำแหน่ง Latitude และ Longitude
     document.getElementById('getLocation').addEventListener('click', () => {
       const status = document.getElementById('status');
 
