@@ -62,7 +62,7 @@
 
 
 <script>//https://nominatim.openstreetmap.org/reverse สำหรับ convert latitude , longitude
-    async function getAddress(latitude, longitude) {
+    function getAddress(latitude, longitude) {
       try {
         // Call Nominatim API
         const response = await fetch(
