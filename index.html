@@ -64,10 +64,10 @@
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-              
-            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
             sendLocationToGA(latitude, longitude); // Send data to GA
-            getAddress(latitude, longitude);  
+            
+            const address = await getAddress(latitude, longitude);
+            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}, Address:`${address};              
           },
           (error) => {
             status.textContent = `Error: ${error.message}`;
