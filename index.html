@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Get Location and Convert to Address</title>
   <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-7QSVBY26ZR');
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-7QSVBY26ZR');
   </script>
 </head>
 <body>
@@ -19,22 +19,20 @@
   <p id="status"></p>
   <p id="address"></p>
 
-
-<script
-// Function to send location data to Google Analytics
-        function sendLocationToGA(latitude, longitude) {
-            gtag('event', 'user_location', {
-                'latitude': latitude,
-                'longitude': longitude
-            });
-            console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
-        }
-  </script>
   <script>
-    // Replace with your Google Maps API Key
+    // Replace with your actual Google Maps API Key
     const API_KEY = "AIzaSyBKimLL3cJbFvEXii52CJPweMzm92_GkSE";
 
-    // Function to get the current location
+    // Function to send location data to Google Analytics
+    function sendLocationToGA(latitude, longitude) {
+      gtag('event', 'user_location', {
+        latitude: latitude,
+        longitude: longitude
+      });
+      console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
+    }
+
+    // Function to fetch user's current location
     async function getLocation() {
       const statusElement = document.getElementById("status");
       const addressElement = document.getElementById("address");
