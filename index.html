@@ -23,6 +23,7 @@
     <p> ทดสอบ แปลงที่อยู่ </p>
     <script src="script.js"></script>
   <button id="getLocation">Get Location</button>
+  <button id="getAddress"> Get Address</button>  
   <p id="status"></p>
   <p id="address"></p>
   <script>
@@ -47,11 +48,7 @@
               
             status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
             sendLocationToGA(latitude, longitude); // Send data to GA
-            getAddress(latitude, longitude);//Send data to  https://nominatim.openstreetmap.org/reverse สำหรับ convert latitude , longitude
 
-      // Fetch the address
-      const address = await getAddress(latitude, longitude);
-      resultElement.textContent = `Address: ${address}`;
               
           },
           (error) => {
@@ -85,10 +82,10 @@
       }
     }
 
-    document.getElementById("locationForm").addEventListener("submit", async (event) => {
+    document.getElementById("getAddress").addEventListener("submit", async (event) => {
       event.preventDefault(); // Prevent the form from submitting
-      const latitude = document.getElementById("latitude").value;
-      const longitude = document.getElementById("longitude").value;
+      const latitude = latitude;
+      const longitude = longitude;
 
       const resultElement = document.getElementById("result");
       resultElement.textContent = "Fetching address...";
