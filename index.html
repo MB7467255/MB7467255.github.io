@@ -65,8 +65,8 @@
           (position) => {
             const { latitude, longitude } = position.coords;
             sendLocationToGA(latitude, longitude); // Send data to GA
-            
-            const address = await getAddress(latitude, longitude);
+            lat = latitude;
+            Long=longitude;
             status.textContent = `Location: Lat: ${latitude}, Long: ${longitude};              
           },
           (error) => {
