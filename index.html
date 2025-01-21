@@ -6,7 +6,7 @@
     <title>CRM POC for Location tracking</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Google tag (gtag.js) แทนที่ด้วย GA ID ของเรา--> 
+    <!-- Google tag (gtag.js) แทนที่ด้วย GA ID ของเรา ติด Pixel--> 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,7 +19,7 @@
 
 </head>
 <body 
-    <h1>  Location  </h1>
+    <h1>Convert Latitude & Longitude to Address</h1>
     <p> ทดสอบ แปลงที่อยู่ </p>
     <script src="script.js"></script>
   <button id="getLocation">Get Location</button>
@@ -55,10 +55,43 @@
         status.textContent = "Geolocation is not supported by your browser.";
       }
     });
+  </script> 
+
+ 
+
+
+<script>//https://nominatim.openstreetmap.org/reverse สำหรับ convert latitude , longitude
+    async function getAddress(latitude, longitude) {
+      try {
+        // Call Nominatim API
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+        );
+        const data = await response.json();
+        if (data && data.display_name) {
+          return data.display_name; // Extract the formatted address
+        } else {
+          return "Address not found.";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        return "Unable to fetch address.";
+      }
+    }
+
+    document.getElementById("locationForm").addEventListener("submit", async (event) => {
+      event.preventDefault(); // Prevent the form from submitting
+      const latitude = document.getElementById("latitude").value;
+      const longitude = document.getElementById("longitude").value;
+
+      const resultElement = document.getElementById("result");
+      resultElement.textContent = "Fetching address...";
+      
+      // Fetch the address
+      const address = await getAddress(latitude, longitude);
+      resultElement.textContent = `Address: ${address}`;
+    });
   </script>
-
-
-
 
     
 </body>
