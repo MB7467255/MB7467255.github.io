@@ -46,6 +46,7 @@
             const { latitude, longitude } = position.coords;
             status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
             sendLocationToGA(latitude, longitude); // Send data to GA
+            getAddress(latitude, longitude);//Send data to  https://nominatim.openstreetmap.org/reverse สำหรับ convert latitude , longitude
           },
           (error) => {
             status.textContent = `Error: ${error.message}`;
