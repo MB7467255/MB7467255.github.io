@@ -3,113 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Get Location and Convert to Address</title>
-  <!-- Google tag (gtag.js) -->
+  <title>Get Location and Send to Google Analytics</title>
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QSVBY26ZR"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
+    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-7QSVBY26ZR');
   </script>
 </head>
 <body>
-  <h1>Get Current Location and Convert to Address using Google Maps API</h1>
+  <h1>Track User Location</h1>
   <button id="getLocation">Get Location</button>
   <p id="status"></p>
-  <p id="address"></p>
 
   <script>
-    // Replace with your actual Google Maps API Key
-    const API_KEY = "AIzaSyBKimLL3cJbFvEXii52CJPweMzm92_GkSE";
-
     // Function to send location data to Google Analytics
     function sendLocationToGA(latitude, longitude) {
       gtag('event', 'user_location', {
-        latitude: latitude,
-        longitude: longitude
+        'latitude': latitude,
+        'longitude': longitude
       });
       console.log(`Location sent to Google Analytics: Lat: ${latitude}, Long: ${longitude}`);
     }
 
-    // Function to fetch user's current location
-    async function getLocation() {
-      const statusElement = document.getElementById("status");
-      const addressElement = document.getElementById("address");
+    // Geolocation API to get user location
+    document.getElementById('getLocation').addEventListener('click', () => {
+      const status = document.getElementById('status');
 
-      // Reset content
-      statusElement.textContent = "";
-      addressElement.textContent = "";
-
-      // Check if Geolocation API is supported
-      if (!navigator.geolocation) {
-        statusElement.textContent = "Geolocation is not supported by your browser.";
-        return;
-      }
-
-      statusElement.textContent = "Fetching location...";
-
-      // Use Geolocation API to get the current position
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-
-          statusElement.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
-          addressElement.textContent = "Fetching address...";
-          sendLocationToGA(latitude, longitude);
-
-          // Convert latitude and longitude to address
-          try {
-            const address = await getAddress(latitude, longitude);
-            addressElement.textContent = `Address: ${address}`;
-          } catch (error) {
-            addressElement.textContent = `Error: ${error.message}`;
+      if (navigator.geolocation) {
+        status.textContent = "Fetching location...";
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            status.textContent = `Location: Lat: ${latitude}, Long: ${longitude}`;
+            sendLocationToGA(latitude, longitude); // Send data to GA
+          },
+          (error) => {
+            status.textContent = `Error: ${error.message}`;
           }
-        },
-        (error) => {
-          handleError(error, statusElement);
-        }
-      );
-    }
-
-    // Function to convert latitude and longitude to an address using Google Maps Geocoding API
-    async function getAddress(latitude, longitude) {
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (data.status === "OK" && data.results.length > 0) {
-        return data.results[0].formatted_address; // Return the formatted address
-      } else if (data.status === "OVER_QUERY_LIMIT") {
-        throw new Error("Quota exceeded. Please check your API Key or usage.");
+        );
       } else {
-        throw new Error("Address not found.");
+        status.textContent = "Geolocation is not supported by your browser.";
       }
-    }
-
-    // Function to handle geolocation errors
-    function handleError(error, element) {
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          element.textContent = "User denied the request for Geolocation.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          element.textContent = "Location information is unavailable.";
-          break;
-        case error.TIMEOUT:
-          element.textContent = "The request to get user location timed out.";
-          break;
-        default:
-          element.textContent = "An unknown error occurred.";
-          break;
-      }
-    }
-
-    // Add event listener to the button
-    document.getElementById("getLocation").addEventListener("click", getLocation);
+    });
   </script>
 </body>
 </html>
