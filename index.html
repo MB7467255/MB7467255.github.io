@@ -67,7 +67,6 @@
             const { latitude, longitude } = position.coords;
                   // Fetch the address
             const address = await getAddress(latitude, longitude);
-            address.textContent = `Address: ${address}`;  
             status.textContent = `Location: Lat: ${latitude}, Long: ${longitude},Long: ${address}`;
             sendLocationToGA(latitude, longitude); // Send data to GA
               
